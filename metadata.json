@@ -1,0 +1,6 @@
+{
+  "name": "Sports E-Commerce Website",
+  "description": "High-performance sports equipment e-commerce store with search, filters, product details, cart, checkout, order tracking, and Supabase database backend integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

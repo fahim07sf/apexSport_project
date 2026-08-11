@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shopping Cart | ApexSports</title>
+  
+  <!-- Tailwind CSS CDN & Custom Styles -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="./css/style.css" />
+  
+  <!-- Supabase JS CDN Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Top Status Banner -->
+  <div id="supabase-status-banner" class="supabase-banner px-4 py-2 text-xs font-medium flex items-center justify-between">
+    <div class="max-w-7xl mx-auto w-full flex items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="banner-text">Supabase Ready: Cart items persist in browser session & sync with checkout order tables.</span>
+      </div>
+      <button id="open-supabase-modal-btn" class="underline hover:text-sky-100 font-semibold cursor-pointer">
+        ⚙️ Configure Supabase Credentials
+      </button>
+    </div>
+  </div>
+
+  <!-- Header (Sleek Interface Theme) -->
+  <header class="sleek-navbar sticky top-0 z-40 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <a href="index.html" class="flex items-center gap-2.5 group">
+        <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-extrabold text-lg shadow-sm group-hover:bg-blue-500 transition">
+          ⚡
+        </div>
+        <div>
+          <span class="text-lg font-extrabold text-white tracking-wider block">VELOCITY<span class="text-blue-500">.</span></span>
+        </div>
+      </a>
+
+      <nav class="flex items-center gap-6">
+        <a href="index.html" class="text-xs uppercase font-bold text-slate-300 hover:text-white tracking-wider transition">
+          ← Continue Shopping
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Your Shopping Cart</h1>
+          <p class="text-slate-500 text-sm mt-1">Review your items before proceeding to checkout</p>
+        </div>
+        
+        <button id="clear-cart-btn" class="text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3.5 py-2 rounded-xl transition cursor-pointer hidden">
+          Clear Entire Cart
+        </button>
+      </div>
+
+      <!-- Main Cart Layout Grid -->
+      <div id="cart-content-layout" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Cart Items List (Table view) -->
+        <div class="lg:col-span-8 bg-white rounded-3xl border border-slate-200 shadow-xs overflow-hidden p-6">
+          <div id="cart-items-container" class="divide-y divide-slate-100">
+            <!-- Dynamic Cart Items Rendered Here -->
+          </div>
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <div class="lg:col-span-4 bg-white rounded-xl border border-slate-200 p-6 card-shadow sticky top-28">
+          <h2 class="text-base font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100 uppercase tracking-wider">Order Summary</h2>
+
+          <div class="space-y-3 text-xs mb-6">
+            <div class="flex justify-between text-slate-600">
+              <span>Subtotal</span>
+              <span id="summary-subtotal" class="font-bold text-slate-900">৳ 0</span>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Standard Shipping</span>
+              <span id="summary-shipping" class="font-bold text-slate-900">৳ 120</span>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Estimated Tax</span>
+              <span class="font-semibold text-emerald-600">Calculated at checkout</span>
+            </div>
+            <div class="pt-3 border-t border-slate-100 flex justify-between items-center">
+              <span class="text-sm font-extrabold text-slate-900">Total</span>
+              <span id="summary-total" class="text-xl font-extrabold text-blue-600">৳ 0</span>
+            </div>
+          </div>
+
+          <a
+            href="checkout.html"
+            id="proceed-checkout-btn"
+            class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold uppercase tracking-wider py-3.5 rounded-lg transition shadow-md cursor-pointer"
+          >
+            Proceed to Checkout →
+          </a>
+
+          <div class="mt-4 text-center">
+            <a href="index.html" class="text-xs font-semibold text-slate-400 hover:text-blue-600 transition">
+              or continue browsing products
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Empty Cart State -->
+      <div id="empty-cart-state" class="hidden text-center py-20 bg-white rounded-3xl border border-slate-200 p-8">
+        <div class="w-20 h-20 bg-sky-50 text-sky-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+          🛒
+        </div>
+        <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Your cart is empty</h2>
+        <p class="text-slate-500 text-sm max-w-md mx-auto mb-6">
+          Looks like you haven't added any sports equipment to your cart yet. Explore our high-performance collection now!
+        </p>
+        <a href="index.html" class="bg-sky-600 hover:bg-sky-700 text-white font-extrabold px-6 py-3.5 rounded-xl shadow-md transition inline-block text-sm">
+          Browse Equipment Catalog
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-10 border-t border-slate-800 mt-auto text-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2">
+        <span class="text-lg font-extrabold text-white">APEX<span class="text-sky-500">SPORTS</span></span>
+        <span>— High Performance Athletic Gear</span>
+      </div>
+      <p class="text-xs text-slate-500">
+        Powered by Vanilla JS, HTML5, CSS3 & Supabase Database.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Supabase Credentials Setup Modal -->
+  <div id="supabase-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border border-slate-100">
+      <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <span>⚙️</span> Supabase Integration
+        </h3>
+        <button id="close-supabase-modal-btn" class="text-slate-400 hover:text-slate-700 text-xl font-bold cursor-pointer">&times;</button>
+      </div>
+
+      <div class="space-y-4 mb-6">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Supabase Project URL</label>
+          <input
+            type="text"
+            id="supabase-url-input"
+            placeholder="https://xyzcompany.supabase.co"
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:ring-2 focus:ring-sky-500 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Supabase Anon Public Key</label>
+          <input
+            type="password"
+            id="supabase-key-input"
+            placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:ring-2 focus:ring-sky-500 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between gap-3">
+        <div id="supabase-connection-status"></div>
+        <button
+          id="save-supabase-config-btn"
+          class="bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-xs cursor-pointer"
+        >
+          Save & Connect
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="./js/supabase-config.js"></script>
+  <script src="./js/app.js"></script>
+  <script src="./js/cart.js"></script>
+</body>
+</html>
