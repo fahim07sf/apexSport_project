@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout | ApexSports</title>
+  
+  <!-- Tailwind CSS CDN & Custom Styles -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="./css/style.css" />
+  
+  <!-- Supabase JS CDN Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Top Status Banner -->
+  <div id="supabase-status-banner" class="supabase-banner px-4 py-2 text-xs font-medium flex items-center justify-between">
+    <div class="max-w-7xl mx-auto w-full flex items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="banner-text">Supabase Ready: Checkout invokes atomic stock decrement via PL/pgSQL RPC procedure.</span>
+      </div>
+      <button id="open-supabase-modal-btn" class="underline hover:text-sky-100 font-semibold cursor-pointer">
+        ⚙️ Configure Supabase Credentials
+      </button>
+    </div>
+  </div>
+
+  <!-- Header (Sleek Interface Theme) -->
+  <header class="sleek-navbar sticky top-0 z-40 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <a href="index.html" class="flex items-center gap-2.5 group">
+        <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-extrabold text-lg shadow-sm group-hover:bg-blue-500 transition">
+          ⚡
+        </div>
+        <div>
+          <span class="text-lg font-extrabold text-white tracking-wider block">VELOCITY<span class="text-blue-500">.</span></span>
+        </div>
+      </a>
+
+      <nav class="flex items-center gap-6">
+        <a href="cart.html" class="text-xs uppercase font-bold text-slate-300 hover:text-white tracking-wider transition">
+          ← Back to Cart
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="mb-8">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Order Checkout</h1>
+        <p class="text-slate-500 text-sm mt-1">Please fill in your shipping information and choose a demo payment method</p>
+      </div>
+
+      <form id="checkout-form" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Customer & Payment Form -->
+        <div class="lg:col-span-8 space-y-6">
+          
+          <!-- Customer Shipping Information Card -->
+          <div class="bg-white rounded-xl border border-slate-200 p-6 md:p-8 card-shadow">
+            <h2 class="text-base font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100 flex items-center gap-2 uppercase tracking-wider">
+              <span>1.</span> Customer & Shipping Address
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="customer-name" class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name *</label>
+                <input
+                  type="text"
+                  id="customer-name"
+                  required
+                  placeholder="e.g., Alex Johnson"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-xs text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label for="customer-phone" class="block text-xs font-bold text-slate-700 uppercase mb-1">Phone Number *</label>
+                <input
+                  type="tel"
+                  id="customer-phone"
+                  required
+                  placeholder="e.g., +1 (555) 234-5678"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-xs text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="customer-email" class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address *</label>
+              <input
+                type="email"
+                id="customer-email"
+                required
+                placeholder="e.g., alex.johnson@example.com"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-xs text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label for="customer-address" class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Delivery Address *</label>
+              <textarea
+                id="customer-address"
+                rows="3"
+                required
+                placeholder="Street address, Apartment/Suite, City, State, Zip Code"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-xs text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Payment Method Card -->
+          <div class="bg-white rounded-xl border border-slate-200 p-6 md:p-8 card-shadow">
+            <h2 class="text-base font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100 flex items-center gap-2 uppercase tracking-wider">
+              <span>2.</span> Select Payment Method
+            </h2>
+
+            <div class="space-y-3 mb-6">
+              
+              <!-- Option 1: Cash on Delivery -->
+              <label class="payment-option-card flex items-start gap-4 selected cursor-pointer">
+                <input type="radio" name="payment_method" value="Cash on Delivery" checked class="mt-1 accent-blue-600" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-slate-900 text-xs">Cash on Delivery (COD)</span>
+                    <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-md">Popular</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">Pay with physical cash or mobile POS upon order arrival at your doorstep.</p>
+                </div>
+              </label>
+
+              <!-- Option 2: Online Payment (BKash, Nagad, Mobile Banking) -->
+              <label class="payment-option-card flex items-start gap-4 cursor-pointer">
+                <input type="radio" name="payment_method" value="Online Payment (BKash, Nagad)" class="mt-1 accent-blue-600" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-slate-900 text-xs">Online Payment (BKash, Nagad, Rocket)</span>
+                    <span class="text-[10px] bg-pink-100 text-pink-800 font-extrabold px-2.5 py-0.5 rounded-md">Mobile Wallet</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">Instant online mobile wallet payment via BKash, Nagad, or Rocket.</p>
+                </div>
+              </label>
+
+              <!-- Option 3: Bank Payment Demo -->
+              <label class="payment-option-card flex items-start gap-4 cursor-pointer">
+                <input type="radio" name="payment_method" value="Bank Payment (demo)" class="mt-1 accent-blue-600" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-slate-900 text-xs">Bank Wire Transfer (Demo)</span>
+                    <span class="text-[10px] bg-slate-100 text-slate-700 font-bold px-2.5 py-0.5 rounded-md">Direct Wire</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">Simulate wire transfer directly to store demo bank account.</p>
+                </div>
+              </label>
+
+            </div>
+
+            <!-- BKash / Nagad Online Payment Details Box -->
+            <div id="demo-card-box" class="bg-pink-50/60 border border-pink-200 rounded-xl p-4 hidden">
+              <h4 class="text-xs font-bold text-pink-900 uppercase mb-2 flex items-center gap-2">
+                <span>📱</span> Mobile Payment Instructions (BKash / Nagad / Rocket)
+              </h4>
+              <p class="text-xs text-slate-700 leading-relaxed mb-3">
+                Send payment to our official merchant account or enter transaction ID after completion:
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-3">
+                <div class="bg-white p-2.5 rounded-lg border border-pink-100">
+                  <span class="block text-[10px] uppercase font-bold text-pink-600">bKash Merchant</span>
+                  <span class="font-mono font-bold text-slate-800 text-sm">01700-123456</span>
+                </div>
+                <div class="bg-white p-2.5 rounded-lg border border-orange-100">
+                  <span class="block text-[10px] uppercase font-bold text-orange-600">Nagad Merchant</span>
+                  <span class="font-mono font-bold text-slate-800 text-sm">01800-654321</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-[10px] uppercase font-bold text-slate-600 mb-1">Transaction TrxID (Optional for Instant Demo)</label>
+                <input type="text" placeholder="e.g., 9J28A71X4" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 font-mono text-xs text-slate-800" />
+              </div>
+            </div>
+
+            <!-- Demo Bank Details Box -->
+            <div id="demo-bank-box" class="bg-slate-50 border border-slate-200 rounded-lg p-4 hidden">
+              <h4 class="text-xs font-bold text-slate-700 uppercase mb-2">Bank Wire Transfer Details</h4>
+              <p class="text-xs text-slate-600 font-mono">Bank: City Bank Bangladesh<br />Account Name: Velocity Sports BD Ltd.<br />Account No: 1102983719001</p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Order Items & Total Summary Sidebar -->
+        <div class="lg:col-span-4 bg-white rounded-xl border border-slate-200 p-6 card-shadow sticky top-28">
+          <h2 class="text-base font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100 uppercase tracking-wider">Cart Items</h2>
+
+          <!-- Mini List of Order Items -->
+          <div id="checkout-items-list" class="space-y-3 mb-6 max-h-60 overflow-y-auto pr-1 divide-y divide-slate-100">
+            <!-- Dynamic Mini Items Rendered by JS -->
+          </div>
+
+          <div class="space-y-3 text-xs pt-4 border-t border-slate-100 mb-6">
+            <div class="flex justify-between text-slate-600">
+              <span>Subtotal</span>
+              <span id="checkout-subtotal" class="font-bold text-slate-900">৳ 0</span>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Standard Shipping</span>
+              <span id="checkout-shipping" class="font-bold text-slate-900">৳ 120</span>
+            </div>
+            <div class="pt-3 border-t border-slate-100 flex justify-between items-center">
+              <span class="text-sm font-extrabold text-slate-900">Total Due</span>
+              <span id="checkout-total" class="text-xl font-extrabold text-blue-600">৳ 0</span>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            id="place-order-btn"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs uppercase tracking-wider py-3.5 rounded-lg transition shadow-md flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span id="place-order-spinner" class="hidden animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
+            <span id="place-order-text">Place Order & Pay Now</span>
+          </button>
+
+          <p class="text-[11px] text-center text-slate-400 mt-3">
+            🔒 Safe order creation with atomic database stock check.
+          </p>
+        </div>
+
+      </form>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-10 border-t border-slate-800 mt-auto text-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2">
+        <span class="text-lg font-extrabold text-white">APEX<span class="text-sky-500">SPORTS</span></span>
+        <span>— High Performance Athletic Gear</span>
+      </div>
+      <p class="text-xs text-slate-500">
+        Powered by Vanilla JS, HTML5, CSS3 & Supabase Database.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Supabase Credentials Setup Modal -->
+  <div id="supabase-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border border-slate-100">
+      <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <span>⚙️</span> Supabase Integration
+        </h3>
+        <button id="close-supabase-modal-btn" class="text-slate-400 hover:text-slate-700 text-xl font-bold cursor-pointer">&times;</button>
+      </div>
+
+      <div class="space-y-4 mb-6">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Supabase Project URL</label>
+          <input
+            type="text"
+            id="supabase-url-input"
+            placeholder="https://xyzcompany.supabase.co"
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:ring-2 focus:ring-sky-500 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Supabase Anon Public Key</label>
+          <input
+            type="password"
+            id="supabase-key-input"
+            placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:ring-2 focus:ring-sky-500 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between gap-3">
+        <div id="supabase-connection-status"></div>
+        <button
+          id="save-supabase-config-btn"
+          class="bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-xs cursor-pointer"
+        >
+          Save & Connect
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="./js/supabase-config.js"></script>
+  <script src="./js/app.js"></script>
+  <script src="./js/checkout.js"></script>
+</body>
+</html>
